@@ -17,12 +17,6 @@ class Crawl(object):
     def _anonymous(self):
         raise NotImplementedError
 
-    def _http(self):
-        raise NotImplementedError
-
-    def _https(self):
-        raise NotImplementedError
-
     def _text(self, url):
         raise NotImplementedError
 
