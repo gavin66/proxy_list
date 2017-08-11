@@ -8,33 +8,64 @@ class Redis(Base):
     def __init__(self):
         # redis 操作客户端
         self._client = pyRedis.from_url(PERSISTENCE['url'])
-
         # 可搜索项
-        self._index_keys = ('anonymity', 'protocol', 'speed')
+        self._index_keys = ('anonymity', 'protocol')
 
-    def list(self):
-        pass
+    def get_keys(self, query=None):
+        if 'ip' in query:
+            return self._client.keys('proxy_%s:%s_%s' % (
+                query['ip'], query['port'] if 'port' in query else '*',
+                query['protocol'] if 'protocol' in query else '*'))
+        index_keys = {'index_%s_%s' % (k, v) for k, v in query.items() if k in self._index_keys}
+        if index_keys:
+            return [v.decode('utf8') for v in self._client.sinter(keys=index_keys)]
+        return dict()
 
-    def get(self):
-        pass
+    def list(self, count=1, query=None):
+        query_list = list()
+        if query:
+            for k, v in query.items():
+                if k in self._index_keys:
+                    query_list.append('index_%s_%s' % (k, v))
+            keys = list(self._client.sinter(query_list))
+            keys.sort(key=lambda x: int(self._client.zscore('index_speed', x)))
+            keys = keys[:count]
+        else:
+            keys = list(self._client.zrangebyscore('index_speed', '-inf', '+inf', start=0, num=count))
+        proxies = []
+        for key in keys:
+            proxy = self._client.hgetall(key)
+            proxies.append(
+                (proxy[b'ip'].decode('utf-8'), proxy[b'port'].decode('utf-8'), proxy[b'protocol'].decode('utf-8')))
+        return proxies
 
     def add(self, data):
         # 存储代理
         proxy_key = 'proxy_%s:%s_%s' % (data['ip'], data['port'], data['protocol'])
         self._client.hmset(proxy_key, data)
-
         # 存储索引,以便搜索
+        # 得分
+        self._client.zadd('index_speed', proxy_key, data['speed'])
         for key in self._index_keys:
-            if key == 'speed':
-                self._client.zadd('index_speed', proxy_key, data['speed'])
-            else:
-                self._client.sadd('index_%s_%s' % (key, data[key]), proxy_key)
+            self._client.sadd('index_%s_%s' % (key, data[key]), proxy_key)
 
-    def update(self):
-        pass
+    def update(self, data):
+        """
+        更新操作,因为已经存在此键的索引,所以只需更新他的 hash 类型中的值和速度 zset 中的值
+        :param data:
+        :return:
+        """
+        proxy_key = 'proxy_%s:%s_%s' % (data['ip'], data['port'], data['protocol'])
+        self._client.hmset(proxy_key, data)
+        self._client.zrem('index_speed', proxy_key)
+        self._client.zadd('index_speed', proxy_key, data['speed'])
 
-    def delete(self):
-        pass
+    def delete(self, data):
+        proxy_key = 'proxy_%s:%s_%s' % (data['ip'], data['port'], data['protocol'])
+        self._client.delete(proxy_key)
+        self._client.zrem('index_speed', proxy_key)
+        for key in self._index_keys:
+            self._client.srem(key, proxy_key)
 
     def handler(self):
         return self._client
@@ -42,5 +73,7 @@ class Redis(Base):
 
 if __name__ == '__main__':
     redis = Redis()
-    handler = redis.handler()
-    print(handler.set('a', 'b'))
+    # redis.list(query={'anonymity': 'anonymous', 'protocol': 'https'})
+    # print(redis.list(count=10))
+    # print(redis.handler().keys('proxy_101.37.79.125*'))
+    print(redis.get_keys({'ip': '42.202.130.246', 'protocol': 'http', 'anonymity': 'anonymous'}))
