@@ -22,7 +22,10 @@ class XiCi(Crawl):
                 if proxies is not None:
                     for proxy in proxies:
                         proxy = self._connectable(proxy)
-                        if proxy:
+                        if isinstance(proxy, list):
+                            for item in proxy:
+                                yield item
+                        elif isinstance(proxy, dict):
                             yield proxy
                     page += 1
                 else:
@@ -45,7 +48,10 @@ class XiCi(Crawl):
                 if proxies is not None:
                     for proxy in proxies:
                         proxy = self._connectable(proxy)
-                        if proxy:
+                        if isinstance(proxy, list):
+                            for item in proxy:
+                                yield item
+                        elif isinstance(proxy, dict):
                             yield proxy
                     page += 1
                 else:
@@ -137,9 +143,15 @@ class XiCi(Crawl):
         https, hs_anonymity, hs_interval = check('https://httpbin.org/get', proxy)
 
         if http and https:
-            proxy['protocol'] = 'http&https'
-            proxy['anonymity'] = h_anonymity
-            proxy['speed'] = h_interval
+            proxy1 = proxy.copy()
+            proxy2 = proxy.copy()
+            proxy1['protocol'] = 'http'
+            proxy1['anonymity'] = h_anonymity
+            proxy1['speed'] = h_interval
+            proxy2['protocol'] = 'https'
+            proxy2['anonymity'] = hs_anonymity
+            proxy2['speed'] = hs_interval
+            proxy = [proxy1, proxy2]
         elif http:
             proxy['protocol'] = 'http'
             proxy['anonymity'] = h_anonymity
