@@ -13,9 +13,9 @@ class Redis(Base):
 
     def get_keys(self, query=None):
         if 'ip' in query:
-            return self._client.keys('proxy_%s:%s_%s' % (
-                query['ip'], query['port'] if 'port' in query else '*',
-                query['protocol'] if 'protocol' in query else '*'))
+            return [x.decode('utf8') for x in self._client.keys('proxy_%s:%s_%s' % (
+                query['ip'], query['port'] if 'port' in query and query['port'] else '*',
+                query['protocol'] if 'protocol' in query and query['protocol'] else '*'))]
         index_keys = {'index_%s_%s' % (k, v) for k, v in query.items() if k in self._index_keys}
         if index_keys:
             return [v.decode('utf8') for v in self._client.sinter(keys=index_keys)]
@@ -28,7 +28,7 @@ class Redis(Base):
                 if k in self._index_keys:
                     query_list.append('index_%s_%s' % (k, v))
             keys = list(self._client.sinter(query_list))
-            keys.sort(key=lambda x: int(self._client.zscore('index_speed', x)))
+            keys.sort(key=lambda x: float(self._client.zscore('index_speed', x)))
             keys = keys[:count]
         else:
             keys = list(self._client.zrangebyscore('index_speed', '-inf', '+inf', start=0, num=count))
@@ -36,7 +36,10 @@ class Redis(Base):
         for key in keys:
             proxy = self._client.hgetall(key)
             proxies.append(
-                (proxy[b'ip'].decode('utf-8'), proxy[b'port'].decode('utf-8'), proxy[b'protocol'].decode('utf-8')))
+                (proxy[b'ip'].decode('utf-8'), proxy[b'port'].decode('utf-8'))
+                # (proxy[b'ip'].decode('utf-8'), proxy[b'port'].decode('utf-8'), proxy[b'protocol'].decode('utf-8'),
+                #  proxy[b'anonymity'].decode('utf-8'))
+            )
         return proxies
 
     def add(self, data):
@@ -65,7 +68,7 @@ class Redis(Base):
         self._client.delete(proxy_key)
         self._client.zrem('index_speed', proxy_key)
         for key in self._index_keys:
-            self._client.srem(key, proxy_key)
+            self._client.srem('index_%s_%s' % (key, data[key]), proxy_key)
 
     def handler(self):
         return self._client
