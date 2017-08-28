@@ -12,7 +12,7 @@ class Redis(Base):
         self._index_keys = ('anonymity', 'protocol')
 
     def get_keys(self, query=None):
-        if 'ip' in query:
+        if 'ip' in query and query['ip']:
             return [x.decode('utf8') for x in self._client.keys('proxy_%s:%s_%s' % (
                 query['ip'], query['port'] if 'port' in query and query['port'] else '*',
                 query['protocol'] if 'protocol' in query and query['protocol'] else '*'))]
