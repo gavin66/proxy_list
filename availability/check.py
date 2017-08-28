@@ -1,34 +1,19 @@
 # -*- coding: UTF-8 -*-
-import gevent
 import time
 import requests
 import json
-import config
-from gevent import monkey
-
-monkey.patch_all()
-
-
-def worker(queue_verification, queue_persistence):
-    while True:
-        spawns = list()
-        for i in range(config.COROUTINE_NUM):
-            proxy = queue_verification.get()
-            spawns.append(gevent.spawn(handle, 'http', proxy, queue_persistence))
-            spawns.append(gevent.spawn(handle, 'https', proxy, queue_persistence))
-        gevent.joinall(spawns)
 
 
 def handle(protocal, proxy, queue_persistence):
     if protocal is 'http':
-        http, h_anonymity, h_interval = check('http://httpbin.org/get', proxy)
+        http, h_anonymity, h_interval = connect('http://httpbin.org/get', proxy)
         if http:
             proxy['protocol'] = 'http'
             proxy['anonymity'] = h_anonymity
             proxy['speed'] = h_interval
             queue_persistence.put(proxy)
     elif protocal is 'https':
-        https, hs_anonymity, hs_interval = check('https://httpbin.org/get', proxy)
+        https, hs_anonymity, hs_interval = connect('https://httpbin.org/get', proxy)
         if https:
             proxy['protocol'] = 'https'
             proxy['anonymity'] = hs_anonymity
@@ -36,12 +21,12 @@ def handle(protocal, proxy, queue_persistence):
             queue_persistence.put(proxy)
 
 
-def check(u, p):
+def connect(url, proxy):
     try:
         start_point = time.time()
-        response = requests.get(u, proxies={
-            'http': 'http://%s:%s' % (p['ip'], p['port']),
-            'https': 'http://%s:%s' % (p['ip'], p['port'])
+        response = requests.get(url, proxies={
+            'http': 'http://%s:%s' % (proxy['ip'], proxy['port']),
+            'https': 'http://%s:%s' % (proxy['ip'], proxy['port'])
         }, **{'timeout': 5})
         if response.ok:
             interval = round(time.time() - start_point, 2)
