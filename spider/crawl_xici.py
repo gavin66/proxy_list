@@ -3,50 +3,29 @@ import config
 from spider.crawl import Crawl
 from lxml import etree
 import requests
+import time
 
 
 class XiCi(Crawl):
-    def transparent(self):
-        url = 'http://www.xicidaili.com/nt/%u'
-        done = False
-        page = 1
-        fail = 0
-        while not done:
-            text = self._text(url % page)
-            if text is not None:
-                proxies = self._parse(text)
-                if proxies is not None:
-                    for proxy in proxies:
-                        yield proxy
-                    page += 1
-                else:
-                    fail += 1
-            else:
-                fail += 1
-            # 如果失败大于5次,停止爬取
-            if fail > 5 or page == 5:
-                done = True
+    def transparent(self, page=1):
+        """
+        获取透明代理
 
-    def anonymous(self):
-        url = 'http://www.xicidaili.com/nn/%u'
-        done = False
-        page = 1
-        fail = 0
-        while not done:
-            text = self._text(url % page)
-            if text is not None:
-                proxies = self._parse(text)
-                if proxies is not None:
-                    for proxy in proxies:
-                        yield proxy
-                    page += 1
-                else:
-                    fail += 1
-            else:
-                fail += 1
-            # 如果失败大于5次,停止爬取
-            if fail > 5 or page == 5:
-                done = True
+        :param page: 页数，默认第一页
+        :rtype: list 返回此页的代理列表
+        """
+        url = 'http://www.xicidaili.com/nt/%u' % page
+        return self._parse(self._text(url))
+
+    def anonymous(self, page=1):
+        """
+        获取匿名代理
+
+        :param page: 页数，默认第一页
+        :rtype: list 返回此页的代理列表
+        """
+        url = 'http://www.xicidaili.com/nn/%u' % page
+        return self._parse(self._text(url))
 
     def _text(self, url):
         response = requests.get(url, **{'timeout': 5, 'headers': config.get_http_header()})
@@ -96,3 +75,17 @@ class XiCi(Crawl):
             proxies.append(proxy)
 
         return proxies
+
+    def generator(self):
+        page = 1
+        while page < 11:
+            for proxy in self.transparent(page):
+                yield proxy
+            for proxy in self.anonymous(page):
+                yield proxy
+            # 爬取下一页
+            page += 1
+            # 如果到 10 页，重新再从第 1 页开始并睡眠15分钟，一直循环下去
+            if page == 11:
+                page = 1
+                time.sleep(60 * 15)

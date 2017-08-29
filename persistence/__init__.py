@@ -7,9 +7,9 @@ elif config.PERSISTENCE['type'] == 'mongo':
     from persistence.mongo_impl import Mongo as persister
 else:
     from persistence.redis_impl import Redis as persister
-persister = persister()
+db = persister()
 
 
 def worker(queue_persistence):
     while True:
-        persister.add(queue_persistence.get())
+        db.add(queue_persistence.get())
