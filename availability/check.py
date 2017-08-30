@@ -1,7 +1,8 @@
 # -*- coding: UTF-8 -*-
 import time
-import requests
 import json
+import config
+import requests
 
 
 def handle(protocal, proxy, queue_persistence):
@@ -27,7 +28,7 @@ def connect(url, proxy):
         response = requests.get(url, proxies={
             'http': 'http://%s:%s' % (proxy['ip'], proxy['port']),
             'https': 'http://%s:%s' % (proxy['ip'], proxy['port'])
-        }, **{'timeout': 5})
+        }, **{'timeout': 10, 'headers': config.get_http_header()})
         if response.ok:
             interval = round(time.time() - start_point, 2)
             res_json = json.loads(response.text)
@@ -39,5 +40,5 @@ def connect(url, proxy):
             return True, anonymity, interval
         else:
             return False, False, False
-    except Exception:
+    except (Exception,) as e:
         return False, False, False

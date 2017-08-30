@@ -2,8 +2,8 @@
 import config
 from spider.crawl import Crawl
 from lxml import etree
-import requests
 import time
+import requests
 
 
 class XiCi(Crawl):

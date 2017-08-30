@@ -72,11 +72,3 @@ class Redis(Base):
 
     def handler(self):
         return self._client
-
-
-if __name__ == '__main__':
-    redis = Redis()
-    # redis.list(query={'anonymity': 'anonymous', 'protocol': 'https'})
-    # print(redis.list(count=10))
-    # print(redis.handler().keys('proxy_101.37.79.125*'))
-    print(redis.get_keys({'ip': '42.202.130.246', 'protocol': 'http', 'anonymity': 'anonymous'}))

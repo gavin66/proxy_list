@@ -1,10 +1,7 @@
 # -*- coding: UTF-8 -*-
 import config
-import availability.check
 import gevent
-from gevent import monkey
-
-monkey.patch_all()
+import availability.check
 
 
 def worker(queue_verification, queue_persistence):

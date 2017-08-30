@@ -1,10 +1,14 @@
 # -*- coding: UTF-8 -*-
+from gevent import monkey
+monkey.patch_all()
+
 import multiprocessing
 import config
 import spider
 import availability
 import persistence
 import web
+
 
 # 进程间队列
 # 爬取的代理
