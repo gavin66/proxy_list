@@ -1,0 +1,43 @@
+FORMAT: 1A
+HOST: http://127.0.0.1:8111
+
+# proxy_list Web API
+默认只对本地 127.0.0.1 IP 开放服务，默认端口为 8111。
+只提供两个接口，代理的获取和删除。
+
+# Group API
+
+
+## 获取代理 [GET /proxy{?count,anonymity,protocol}]
++ Parameters
+    + count: `1` (number, optional) - 获取的代理数量，默认为 1，非必填项。
+    + anonymity: transparent (enum[string], optional)
+        你想要获取代理的类型，透明或匿名，枚举类型，非必填项。
+        * transparent: 透明代理
+        * anonymous: 匿名代理
+        + Members
+            + transparent
+            + anonymous
+    + protocol: http (enum[string], optional)
+        代理协议，枚举类型，非必填项。
+        * http: http 协议
+        * https: https 协议
+        + Members
+            + http
+            + https
++ Response 200 (application/json)
+    + Body
+        [
+            [
+            "124.207.126.5",
+            "3128"
+            ]
+        ]
+
+
+## 删除代理 [GET /proxy/delete{?ip,port,protocol}]
++ Parameters
+    + ip: 124.207.126.5 (string,required) -  要删除的 IP，必填。
+    + port: 3128 (string,optional) - 端口，非必填。
+    + protocol: http (string,optional) - 协议，非必填。
++ Response 204
