@@ -1,10 +1,9 @@
-# proxy_list
-爬取 IP 代理以供爬虫等业务使用。
-
-Python 新手，代码不规范请见谅。此项目也是练手的，借鉴了 [qiyeboy](https://github.com/qiyeboy) / [IPProxyPool](https://github.com/qiyeboy/IPProxyPool) 的项目。
+# [proxy_list](https://github.com/gavin66/proxy_list)
+很多网站对爬虫都会有 IP 访问频率的限制。如果你的爬虫只用一个 IP 来爬取，那就只能设置爬取间隔，来避免被网站屏蔽。但是这样爬虫的效率会大大下降，这个时候就需要使用代理 IP 来爬取数据。一个 IP 被屏蔽了，换一个 IP 继续爬取。此项目就是提供给你免费代理的。
 
 需要免费代理的可以试试，如果对您有帮助，希望给个 Star ⭐，谢谢！😁😘🎁🎉
 
+Github 项目地址 [gavin66](https://github.com/gavin66) / [proxy_list](https://github.com/gavin66/proxy_list)
 
 
 ## 特性
@@ -47,15 +46,9 @@ python run.py
 
 [查看文档](https://htmlpreview.github.io/?https://github.com/gavin66/proxy_list/blob/master/doc/web_api.html)
 
-文档截图
-![3](https://github.com/gavin66/proxy_list/blob/master/doc/p3.png?raw=true)
 
-直接获取一个速度最快的代理
-![1](https://github.com/gavin66/proxy_list/blob/master/doc/p1.png?raw=true)
+![文档截图](https://github.com/gavin66/proxy_list/blob/master/doc/p3.png?raw=true)
 
-获取 https 的匿名代理，取前5个速度最快的
-![2](https://github.com/gavin66/proxy_list/blob/master/doc/p2.png?raw=true)
+![直接获取一个速度最快的代理](https://github.com/gavin66/proxy_list/blob/master/doc/p1.png?raw=true)
 
-
-
-
+![获取 https 的匿名代理，取前5个速度最快的](https://github.com/gavin66/proxy_list/blob/master/doc/p2.png?raw=true)
