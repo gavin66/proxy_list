@@ -12,7 +12,7 @@ Github 项目地址 [gavin66](https://github.com/gavin66) / [proxy_list](https:/
 
 * 验证代理有效性时使用协程来减少网络 IO 的等待时间。
 
-* 持久化（目前使用 Redis）爬取下来的代理。
+* 按照代理连接速度排序并持久化（目前使用 Redis）爬取下来的代理。
 
 * 提供 Web API，随时提取与删除代理。
 
