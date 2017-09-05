@@ -22,6 +22,7 @@ USER_AGENTS = [
 ]
 
 
+# 模拟浏览器爬取代理 http 头信息
 def get_http_header():
     return {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
@@ -33,10 +34,23 @@ def get_http_header():
 
 
 # 持久化
+# 目前只支持 redis
 PERSISTENCE = {
     'type': 'redis',
     'url': 'redis://127.0.0.1:6379/1'
 }
 
-# 并发数
-COROUTINE_NUM = 25
+# 协程并发数
+# 爬取下来的代理测试可用性时使用，减少网络 io 的等待时间
+COROUTINE_NUM = 50
+
+# 保存多少条代理
+# 默认200，如果存储了200条代理，如果不删除代理就不会再爬取新代理
+PROXY_STORE_NUM = 300
+
+# 如果保存的代理条数已到阀值，爬取进程睡眠秒数
+# 默认60秒，存储满200条后爬虫进程睡眠60秒，醒来后如果还是满额继续睡眠
+PROXY_FULL_SLEEP_SEC = 60
+
+# 已保存的代理每隔多少秒检测一遍可用性
+PROXY_STORE_CHECK_SEC = 1200

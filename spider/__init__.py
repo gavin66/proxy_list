@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from spider.crawl_xici import XiCi
-from persistence import db
+from persistence import persister
+import config
 import time
 
 
@@ -8,8 +9,8 @@ def worker(queue_verification):
     spider = XiCi()
     for proxy in spider.generator():
         while True:
-            if db.handler().zcount('index_speed', '-inf', '+inf') > 200:
-                time.sleep(60 * 3)
+            if persister.handler().zcount('index_speed', '-inf', '+inf') > config.PROXY_STORE_NUM:
+                time.sleep(config.PROXY_FULL_SLEEP_SEC)
             elif queue_verification.full():
                 time.sleep(0.5)
             else:

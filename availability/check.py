@@ -5,7 +5,7 @@ import config
 import requests
 
 
-def handle(protocal, proxy, queue_persistence):
+def crawl_handle(protocal, proxy, queue_persistence):
     if protocal is 'http':
         http, h_anonymity, h_interval = connect('http://httpbin.org/get', proxy)
         if http:
@@ -20,6 +20,23 @@ def handle(protocal, proxy, queue_persistence):
             proxy['anonymity'] = hs_anonymity
             proxy['speed'] = hs_interval
             queue_persistence.put(proxy)
+
+
+def store_handle(protocal, proxy, persister):
+    if protocal is 'http':
+        http, h_anonymity, h_interval = connect('http://httpbin.org/get', proxy)
+        if http:
+            proxy['speed'] = h_interval
+            persister.update(proxy)
+        else:
+            persister.delete(proxy)
+    elif protocal is 'https':
+        https, hs_anonymity, hs_interval = connect('https://httpbin.org/get', proxy)
+        if https:
+            proxy['speed'] = hs_interval
+            persister.update(proxy)
+        else:
+            persister.delete(proxy)
 
 
 def connect(url, proxy):

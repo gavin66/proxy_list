@@ -20,8 +20,10 @@ queue_persistence = multiprocessing.Queue()
 workers = list()
 # 爬虫
 workers.append(multiprocessing.Process(target=spider.worker, args=(queue_verification,)))
-# 验证
-workers.append(multiprocessing.Process(target=availability.worker, args=(queue_verification, queue_persistence)))
+# 爬取下来的代理验证
+workers.append(multiprocessing.Process(target=availability.crawl_worker, args=(queue_verification, queue_persistence)))
+# 已持久化的代理验证
+workers.append(multiprocessing.Process(target=availability.store_worker))
 # 持久化
 workers.append(multiprocessing.Process(target=persistence.worker, args=(queue_persistence,)))
 # web api 服务
