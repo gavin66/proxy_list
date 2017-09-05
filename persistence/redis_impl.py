@@ -21,7 +21,7 @@ class Redis(Base):
             return [v.decode('utf8') for v in self._client.sinter(keys=index_keys)]
         return dict()
 
-    def list(self, count=1, query=None):
+    def list(self, count=1, query=None, columns=None):
         query_list = list()
         if query:
             for k, v in query.items():
@@ -29,17 +29,30 @@ class Redis(Base):
                     query_list.append('index_%s_%s' % (k, v))
             keys = list(self._client.sinter(query_list))
             keys.sort(key=lambda x: float(self._client.zscore('index_speed', x)))
-            keys = keys[:count]
+            if isinstance(count, int):
+                keys = keys[:count]
         else:
-            keys = list(self._client.zrangebyscore('index_speed', '-inf', '+inf', start=0, num=count))
+            start = 0
+            if isinstance(count, str):
+                count = None
+                start = None
+            keys = list(self._client.zrangebyscore('index_speed', '-inf', '+inf', start=start, num=count))
         proxies = []
         for key in keys:
             proxy = self._client.hgetall(key)
-            proxies.append(
-                (proxy[b'ip'].decode('utf-8'), proxy[b'port'].decode('utf-8'))
-                # (proxy[b'ip'].decode('utf-8'), proxy[b'port'].decode('utf-8'), proxy[b'protocol'].decode('utf-8'),
-                #  proxy[b'anonymity'].decode('utf-8'))
-            )
+            if isinstance(columns, tuple) and len(columns):
+                x = {}
+                for k in columns:
+                    if k.encode('utf-8') in proxy.keys():
+                        x[k] = proxy[k.encode('utf-8')].decode('utf-8')
+                proxies.append(x)
+            elif isinstance(columns, str) and columns == 'all':
+                # ip, port, country, address, anonymity, protocol, speed
+                proxies.append({x.decode('utf-8'): y.decode('utf-8') for x, y in proxy.items()})
+            else:
+                proxies.append(
+                    (proxy[b'ip'].decode('utf-8'), proxy[b'port'].decode('utf-8'))
+                )
         return proxies
 
     def add(self, data):
