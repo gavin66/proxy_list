@@ -78,14 +78,14 @@ class XiCi(Crawl):
 
     def generator(self):
         page = 1
-        while page < 11:
+        while page < 16:
             for proxy in self.transparent(page):
                 yield proxy
             for proxy in self.anonymous(page):
                 yield proxy
             # 爬取下一页
             page += 1
-            # 如果到 10 页，重新再从第 1 页开始并睡眠15分钟，一直循环下去
-            if page == 11:
+            # 如果到 15 页，重新再从第 1 页开始并睡眠15分钟，一直循环下去
+            if page == 16:
                 page = 1
-                time.sleep(60 * 15)
+                time.sleep(900)
