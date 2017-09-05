@@ -30,6 +30,8 @@ git clone git@github.com:gavin66/proxy_list.git
 
 安装依赖
 
+**推荐使用 [virtualenv](https://virtualenv.pypa.io/en/stable/) 来构建环境，防止冲突**
+
 ```sh
 pip install -r requirements.txt
 ```
