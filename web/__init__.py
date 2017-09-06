@@ -46,4 +46,4 @@ def proxy_del():
 
 
 def worker():
-    app.run(host='127.0.0.1', port=8111, debug=False)
+    app.run(host=config.WEB_API_IP, port=config.WEB_API_PORT, debug=False)

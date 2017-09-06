@@ -55,3 +55,8 @@ PROXY_FULL_SLEEP_SEC = 60
 
 # 已保存的代理每隔多少秒检测一遍可用性
 PROXY_STORE_CHECK_SEC = 1200
+
+# web api
+# 指定接口 IP 和端口
+WEB_API_IP = '127.0.0.1'
+WEB_API_PORT = '8111'
