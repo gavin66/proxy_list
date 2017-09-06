@@ -18,8 +18,6 @@ Github 项目地址 [gavin66](https://github.com/gavin66) / [proxy_list](https:/
 
   ​
 
-  ​
-
 ## 使用
 
 **使用 Python3.6 开发的项目，没有对其他版本 Python 测试**
@@ -85,12 +83,14 @@ PROXY_STORE_CHECK_SEC = 1200
 
 [查看文档](https://htmlpreview.github.io/?https://github.com/gavin66/proxy_list/blob/master/doc/web_api.html)
 
+![](https://github.com/gavin66/proxy_list/blob/master/doc/p3.png?raw=true)
 
-**文档截图**
-![1](https://github.com/gavin66/proxy_list/blob/master/doc/p3.png?raw=true)
 
 **直接获取一个速度最快的代理**
-![2](https://github.com/gavin66/proxy_list/blob/master/doc/p1.png?raw=true)
+
+![](https://github.com/gavin66/proxy_list/blob/master/doc/p1.png?raw=true)
+
 
 **获取 https 的匿名代理，取前5个速度最快的**
+
 ![3](https://github.com/gavin66/proxy_list/blob/master/doc/p2.png?raw=true)
