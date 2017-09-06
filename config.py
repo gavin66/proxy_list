@@ -35,6 +35,7 @@ def get_http_header():
 
 # 持久化
 # 目前只支持 redis
+# 这里只能修改你的 redis 连接字符串
 PERSISTENCE = {
     'type': 'redis',
     'url': 'redis://127.0.0.1:6379/1'
@@ -45,7 +46,7 @@ PERSISTENCE = {
 COROUTINE_NUM = 50
 
 # 保存多少条代理
-# 默认200，如果存储了200条代理，如果不删除代理就不会再爬取新代理
+# 默认200，如果存储了200条代理并不删除代理就不会再爬取新代理
 PROXY_STORE_NUM = 300
 
 # 如果保存的代理条数已到阀值，爬取进程睡眠秒数
