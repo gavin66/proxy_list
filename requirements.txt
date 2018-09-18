@@ -3,3 +3,4 @@ gevent
 lxml
 redis
 requests
+termcolor

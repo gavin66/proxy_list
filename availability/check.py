@@ -13,6 +13,10 @@ def crawl_handle(protocal, proxy, queue_persistence):
             proxy['anonymity'] = h_anonymity
             proxy['speed'] = h_interval
             queue_persistence.put(proxy)
+            config.console_log('验证通过的 http 代理: ' + json.dumps(proxy, ensure_ascii=False), 'green')
+        else:
+            config.console_log('无效的 http 代理: ' + json.dumps(proxy, ensure_ascii=False), 'red')
+
     elif protocal is 'https':
         https, hs_anonymity, hs_interval = connect('https://httpbin.org/get', proxy)
         if https:
@@ -20,6 +24,9 @@ def crawl_handle(protocal, proxy, queue_persistence):
             proxy['anonymity'] = hs_anonymity
             proxy['speed'] = hs_interval
             queue_persistence.put(proxy)
+            config.console_log('验证通过的 https 代理: ' + json.dumps(proxy, ensure_ascii=False), 'green')
+        else:
+            config.console_log('无效的https代理: ' + json.dumps(proxy, ensure_ascii=False), 'red')
 
 
 def store_handle(protocal, proxy, persister):
