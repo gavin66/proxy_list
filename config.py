@@ -1,5 +1,9 @@
 # -*- coding: UTF-8 -*-
 import random
+from termcolor import cprint
+
+# 是否打印控制台日志
+CONSOLE_LOG = False
 
 # http://www.useragentstring.com/pages/useragentstring.php
 USER_AGENTS = [
@@ -28,7 +32,7 @@ def get_http_header():
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'h-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4',
-        'Connection': 'keep-alive',
+        'Connection': 'close',  # 长连接过多会导致异常,所以取消
         'User-Agent': random.choice(USER_AGENTS)
     }
 
@@ -60,3 +64,8 @@ PROXY_STORE_CHECK_SEC = 1200
 # 指定接口 IP 和端口
 WEB_API_IP = '127.0.0.1'
 WEB_API_PORT = '8111'
+
+
+def console_log(text, color=None, on_color=None, attrs=None, **kwargs):
+    if CONSOLE_LOG:
+        cprint(text, color, on_color, attrs, **kwargs)
