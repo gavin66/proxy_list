@@ -16,7 +16,7 @@ def worker(queue_verification):
     # 好的源排在前面优先被爬取
     spiders = [XiCi(), Kuai()]
     page = 1
-    while page < 8:
+    while page <= config.PAGE:
         for spider in spiders:
             for proxy in spider.generator(page):
                 if persister.handler().zcount('index_speed', '-inf', '+inf') > config.PROXY_STORE_NUM:
@@ -25,7 +25,7 @@ def worker(queue_verification):
                     time.sleep(0.5)
                 else:
                     queue_verification.put(proxy)
-        if page == 8:
+        if page == config.PAGE:
             page = 1
         else:
             page += 1

@@ -16,6 +16,7 @@ def crawl_handle(protocal, proxy, queue_persistence):
             config.console_log('验证通过的 http 代理: ' + json.dumps(proxy, ensure_ascii=False), 'green')
         else:
             config.console_log('无效的 http 代理: ' + json.dumps(proxy, ensure_ascii=False), 'red')
+            pass
 
     elif protocal is 'https':
         https, hs_anonymity, hs_interval = connect('https://httpbin.org/get', proxy)
@@ -27,6 +28,7 @@ def crawl_handle(protocal, proxy, queue_persistence):
             config.console_log('验证通过的 https 代理: ' + json.dumps(proxy, ensure_ascii=False), 'green')
         else:
             config.console_log('无效的https代理: ' + json.dumps(proxy, ensure_ascii=False), 'red')
+            pass
 
 
 def store_handle(protocal, proxy, persister):

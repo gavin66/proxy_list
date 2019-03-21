@@ -7,6 +7,7 @@ class XiCi(Crawl):
     """
     http://www.xicidaili.com/
     """
+
     def _transparent(self, page=1):
         """
         获取透明代理
