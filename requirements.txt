@@ -1,6 +1,6 @@
 Flask
 gevent
 lxml
-redis
+redis>2.0,<3.0
 requests
 termcolor
