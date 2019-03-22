@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from spider.crawl import Crawl
 from lxml import etree
+from config import catch_exception_logging
 
 
 class Kuai(Crawl):
@@ -28,6 +29,7 @@ class Kuai(Crawl):
         url = 'https://www.kuaidaili.com/free/inha/%d/' % page
         return self._parse(self._text(url))
 
+    @catch_exception_logging
     def _parse(self, text):
 
         if text is None:

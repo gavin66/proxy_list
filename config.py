@@ -70,5 +70,31 @@ WEB_API_PORT = '8111'
 
 
 def console_log(text, color=None, on_color=None, attrs=None, **kwargs):
+    """
+    控制台打印日志
+    :param text:
+    :param color:
+    :param on_color:
+    :param attrs:
+    :param kwargs:
+    :return:
+    """
     if CONSOLE_LOG:
         cprint(text, color, on_color, attrs, **kwargs)
+
+
+def catch_exception_logging(func):
+    """
+    捕获异常,记录日志
+    :param func:
+    :return:
+    """
+
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            console_log(str(e), 'red')
+            return None
+
+    return wrapper

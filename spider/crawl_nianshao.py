@@ -7,6 +7,7 @@ import requests
 
 class NianShao(Crawl):
     """
+    已经废弃了
     http://www.nianshao.me/
     """
 
