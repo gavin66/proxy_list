@@ -29,14 +29,14 @@ class XiCi(Crawl):
         url = 'http://www.xicidaili.com/nn/%u' % page
         return self._parse(self._text(url))
 
-    @catch_exception_logging
+    @catch_exception_logging(list())
     def _parse(self, text):
         proxies = list()
         root = etree.HTML(text)
         ip_list = root.xpath(".//*[@id='ip_list']/tr[position()>1]")
 
         if not ip_list:
-            return None
+            return list()
 
         for item in ip_list:
             ip = item.xpath('./td[2]')[0].text
@@ -70,9 +70,3 @@ class XiCi(Crawl):
             proxies.append(proxy)
 
         return proxies
-
-    def generator(self, page):
-        for proxy in self._transparent(page):
-            yield proxy
-        for proxy in self._anonymous(page):
-            yield proxy

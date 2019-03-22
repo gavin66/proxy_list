@@ -29,7 +29,7 @@ class Kuai(Crawl):
         url = 'https://www.kuaidaili.com/free/inha/%d/' % page
         return self._parse(self._text(url))
 
-    @catch_exception_logging
+    @catch_exception_logging(list())
     def _parse(self, text):
 
         if text is None:
@@ -40,7 +40,7 @@ class Kuai(Crawl):
         ip_list = root.xpath(".//*[@id='list']/table[position()=1]/tbody/tr")
 
         if not ip_list:
-            return None
+            return list()
 
         for item in ip_list:
             ip = item.xpath('./td[1]')[0].text

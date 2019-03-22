@@ -83,18 +83,21 @@ def console_log(text, color=None, on_color=None, attrs=None, **kwargs):
         cprint(text, color, on_color, attrs, **kwargs)
 
 
-def catch_exception_logging(func):
+def catch_exception_logging(return_value):
     """
     捕获异常,记录日志
-    :param func:
+    :param return_value:
     :return:
     """
 
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            console_log(str(e), 'red')
-            return None
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                console_log(str(e), 'red')
+                return return_value
 
-    return wrapper
+        return wrapper
+
+    return decorator
