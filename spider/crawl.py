@@ -81,8 +81,12 @@ class Crawl(object):
             return None
 
     def _text(self, url):
-        if config.REQUEST_PROXY_RETRY:
-            proxy = self.__proxy()
+
+        # 获取一个代理
+        proxy = self.__proxy()
+
+        # 已设置使用代理且已有代理
+        if config.REQUEST_PROXY_RETRY and proxy:
             text = self.__request(proxy, url)
 
             # 代理已重试次数
