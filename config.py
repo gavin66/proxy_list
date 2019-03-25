@@ -63,6 +63,10 @@ PROXY_STORE_CHECK_SEC = 1200
 # 每个代理源只爬取前几页,循环往复(理论上页码越大,可用性越差)
 PAGE = 8
 
+# 使用已爬取的代理请求页面,失败重试次数(爬取页面时可能会被封 IP,加入此项后可安心爬取,但爬取速度下降)
+# 设置为 "0" 代表不使用代理
+REQUEST_PROXY_RETRY = 5
+
 # web api
 # 指定接口 IP 和端口
 WEB_API_IP = '127.0.0.1'
@@ -95,7 +99,7 @@ def catch_exception_logging(return_value):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                console_log(str(e), 'red')
+                console_log('捕获错误: ' + str(e), 'red')
                 return return_value
 
         return wrapper

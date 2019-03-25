@@ -14,7 +14,7 @@ def worker(queue_verification):
     :return:
     """
     # 好的源排在前面优先被爬取
-    spiders = [XiCi(), Kuai()]
+    spiders = [Kuai(), XiCi()]
     page = 1
     while page <= config.PAGE:
         for spider in spiders:
@@ -22,7 +22,7 @@ def worker(queue_verification):
                 if persister.handler().zcount('index_speed', '-inf', '+inf') > config.PROXY_STORE_NUM:
                     time.sleep(config.PROXY_FULL_SLEEP_SEC)
                 elif queue_verification.full():
-                    time.sleep(0.5)
+                    time.sleep(1)
                 else:
                     queue_verification.put(proxy)
         if page == config.PAGE:
